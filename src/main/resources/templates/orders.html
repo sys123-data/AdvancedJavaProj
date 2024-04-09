@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <title>List Orders</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Bootstrap Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <style>
+        /* Default background color for "Back" and "Logout" links */
+ .nav-link.back-link {
+     background-color: #d1ecf1 !important; /* Light blue */
+ }
+
+ .nav-link.logout-link {
+   background-color: #f8d7da !important; /* Light red */
+
+ }
+ /* Blue hover effect for "Back" link */
+ .nav-link.back-link:hover {
+     color: #fff !important; /* White text color */
+     background-color: #007bff !important; /* Blue background color */
+ }
+
+ /* Red hover effect for "Logout" link */
+ .nav-link.logout-link:hover {
+     color: #fff !important; /* White text color */
+     background-color: #dc3545 !important; /* Red background color */
+ }
+
+ /* Equal size for buttons */
+ .navbar-nav .nav-link {
+     padding: 0.5rem 1rem; /* Adjust as needed */
+     min-width: 100px; /* Adjust as needed */
+     text-align: center;
+ }
+.nav-link img {
+    max-width: 30px; /* Adjust the maximum width as needed */
+    max-height: 30px; /* Adjust the maximum height as needed */
+}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Left-aligned content (Back button) -->
+        <div class="navbar-nav">
+            <a class="nav-link back-link" href="/backAdmin">Back</a>
+        </div>
+
+        <!-- Center-aligned content (Title) -->
+        <div class="navbar-brand mx-auto">List Orders</div>
+
+        <!-- Right-aligned content (Logout button) -->
+        <div class="navbar-nav">
+            <a class="nav-link logout-link" href="/logout">
+                <img th:src="@{/images/power-on.png}" alt="Power On" >
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h2 class="mb-4">List Orders</h2>
+    <div th:if="${error}" th:id="${'userExistsError'}" style="color: red;" th:text="${error}"></div>
+
+    </div>
+<!-- Orders Table -->
+<div class="container mt-4">
+    <form action="/admin/filterOrders" method="get">
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Filter by Category:</label>
+            <select id="category" name="category" class="form-select">
+                <option value="34">34</option>
+                <!-- Render numeric options dynamically -->
+                <th:block th:each="num : ${#numbers.sequence(35, 46)}">
+                    <option th:value="${num}" th:text="${num}"></option>
+                </th:block>
+            </select>
+        </div>
+        <!-- Timestamp Filter -->
+        <div class="mb-3">
+            <label class="form-label">Filter by Timestamp:</label>
+            <input type="text" id="startTime" name="startTime" class="form-control" placeholder="YYYY-MM-DD">
+            <input type="text" id="endTime" name="endTime" class="form-control" placeholder="YYYY-MM-DD">
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+
+
+    </form>
+
+    <!-- Orders Table -->
+    <table class="table mt-4">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User ID</th>
+            <th>Purchase Time</th>
+            <th>Product ID</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over orders and display in table rows -->
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.orderId}"></td>
+            <td th:text="${order.userId}"></td>
+            <td th:text="${order.purchaseTime}"></td>
+            <td th:text="${order.prodInvId}"></td>
+            <td th:text="${order.quantity}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:inline="javascript">
+
+    // Function to dismiss error messages after 5 seconds
+    function dismissErrorMessages() {
+        var userExistsError = document.getElementById('userExistsError');
+        if (userExistsError) {
+            userExistsError.style.display = 'none';
+        }
+
+
+    }
+
+    // Call the function to dismiss error messages whenever an error is displayed
+
+    setTimeout(function() { dismissErrorMessages(); }, 5000);
+
+</script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+
+
+        // Initialize the Bootstrap Datepicker
+        $('#startTime, #endTime').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true,
+            todayBtn: true
+        });
+    });
+</script>
+
+
+</body>
+
+</html>
